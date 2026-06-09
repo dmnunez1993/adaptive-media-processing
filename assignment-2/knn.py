@@ -1,4 +1,4 @@
-class KNN:
+class KNNClassifier:
     """A simple k-nearest neighbors classifier.
 
     Attributes:
