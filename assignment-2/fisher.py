@@ -10,6 +10,9 @@ class FisherBinaryClassifier:
 
     def fit(self, X_train, y_train):
         """Fit the Fisher's linear discriminant model to the training data.
+        It calculates the projection matrix w which maximizes the separation
+        between the two classes in the projected space, and also calculates
+        the threshold for classification based on the means of the projected classes.
 
         Args:
             X_train (list[list[float]]): Training feature vectors.
@@ -68,7 +71,6 @@ class FisherClassifier:
     """
 
     def __init__(self):
-        self._num_classes = 0
         self._binary_classifiers = []
         self._unique_classes = []
         self._fitted = False
@@ -81,7 +83,6 @@ class FisherClassifier:
             y_train (list): Training labels corresponding to each row in X_train.
         """
         unique_classes = np.unique(y_train)
-        self._num_classes = len(unique_classes)
         self._binary_classifiers = []
         self._unique_classes = unique_classes
 
