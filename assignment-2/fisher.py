@@ -17,20 +17,24 @@ class FisherBinaryClassifier:
         """
         X0 = X_train[y_train == 0]
         X1 = X_train[y_train == 1]
+
+        # First, compute the means for each class
         mu0 = X0.mean(axis=0)
         mu1 = X1.mean(axis=0)
 
+        # Next, compute the between class scatter matrices for each class
         d0 = (X0 - mu0).reshape(X0.shape[0], -1)
         S0 = d0.T @ d0
-
-
         d1 = (X1 - mu1).reshape(X1.shape[0], -1)
         S1 = d1.T @ d1
 
-        SW = S0 + S1
+        # Calculate the total between-class scatter matrix
+        SB = S0 + S1
 
-        self.w = np.linalg.pinv(SW) @ (mu1 - mu0)
+        # Calculate w using the formula w = SB^-1 * (mu1 - mu0)
+        self.w = np.linalg.pinv(SB) @ (mu1 - mu0)
 
+        # Calculate the threshold as the midpoint between the projections of the class means onto w
         m0 = self.w @ mu0
         m1 = self.w @ mu1
 
@@ -48,6 +52,7 @@ class FisherBinaryClassifier:
         if not self._fitted:
             raise ValueError("The model has not been fitted yet.")
 
+        # Project the test examples onto the weight vector w and compare to the threshold
         scores = self.decision_function(X_test)
 
         return (
