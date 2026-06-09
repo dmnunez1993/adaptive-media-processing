@@ -43,6 +43,8 @@ class FisherBinaryClassifier:
 
     def predict(self, X_test):
         """Predict labels for a collection of test examples.
+        Projects the test examples onto the weight vector w and compares
+        to the threshold to determine class labels.
 
         Args:
             X_test (list[list[float]]): Test examples to classify.
