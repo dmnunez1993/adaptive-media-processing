@@ -3,12 +3,6 @@ import numpy as np
 
 class FisherBinaryClassifier:
     """A simple Fisher's linear discriminant binary classifier.
-
-    Attributes:
-        class_means: A dictionary mapping class labels to their mean vectors.
-        overall_mean: The overall mean vector of the data.
-        scatter_within: The within-class scatter matrix.
-        scatter_between: The between-class scatter matrix.
     """
 
     def __init__(self):
@@ -21,21 +15,17 @@ class FisherBinaryClassifier:
             X_train (list[list[float]]): Training feature vectors.
             y_train (list): Training labels corresponding to each row in X_train.
         """
-        # Compute class means, overall mean, and scatter matrices here
         X0 = X_train[y_train == 0]
         X1 = X_train[y_train == 1]
         mu0 = X0.mean(axis=0)
         mu1 = X1.mean(axis=0)
 
-        S0 = np.zeros((X_train.shape[1], X_train.shape[1]))
-        for x in X0:
-            d = (x - mu0).reshape(-1, 1)
-            S0 += d @ d.T
+        d0 = (X0 - mu0).reshape(X0.shape[0], -1)
+        S0 = d0.T @ d0
 
-        S1 = np.zeros((X_train.shape[1], X_train.shape[1]))
-        for x in X1:
-            d = (x - mu1).reshape(-1, 1)
-            S1 += d @ d.T
+
+        d1 = (X1 - mu1).reshape(X1.shape[0], -1)
+        S1 = d1.T @ d1
 
         SW = S0 + S1
 
@@ -83,7 +73,6 @@ class FisherClassifier:
             X_train (list[list[float]]): Training feature vectors.
             y_train (list): Training labels corresponding to each row in X_train.
         """
-        # Compute class means, overall mean, and scatter matrices here
         unique_classes = np.unique(y_train)
         self._num_classes = len(unique_classes)
         self._binary_classifiers = []
