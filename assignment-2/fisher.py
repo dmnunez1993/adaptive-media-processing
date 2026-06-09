@@ -53,7 +53,7 @@ class FisherBinaryClassifier:
             raise ValueError("The model has not been fitted yet.")
 
         # Project the test examples onto the weight vector w and compare to the threshold
-        scores = self.decision_function(X_test)
+        scores = X_test @ self.w - self.threshold
 
         return (
             scores >= 0
