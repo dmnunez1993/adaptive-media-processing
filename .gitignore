@@ -8,3 +8,7 @@ __pycache__/
 *.fls
 *.fdb_latexmk
 *.aux
+
+.DS_Store
+
+*.synctex.gz

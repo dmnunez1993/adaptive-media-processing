@@ -13,21 +13,26 @@
     urlcolor=blue
 }
 
-\title{Adaptive Media Processing Assignment 2\\Fisher's Iris Classification Problem}
-\author{}
-\date{}
-
 \begin{document}
 
-\maketitle
+\begin{center}
+{\LARGE\bfseries Adaptive Media Processing Assignment 2\par}
+\vspace{0.5em}
+{\Large Iris Classification Problem\par}
+\end{center}
+
+\begin{flushleft}
+Name: Maldonado Nunez Diego Manuel\\
+Student ID: 202620726
+\end{flushleft}
 
 \section{Source Code}
 
-The full implementation of the classifiers, experiments, and result generation is provided in the Jupyter notebook \texttt{assignment\_2.ipynb}. The notebook contains the custom implementation of the k-nearest neighbor classifier and the Fisher linear discriminator used for this report. This PDF report includes the method descriptions, plots, results, and discussion, while excluding the source code itself.
+The full implementation of the classifiers, experiments, and result generation is provided in the Jupyter notebook \texttt{assignment\_2.ipynb}.
 
 \section{Solution}
 
-As a first step, the classifiers were created and tested on one split of the dataset, using 50\% of the samples for training and the remaining 50\% for testing. The following metrics were used to evaluate performance: accuracy, precision, recall, F1-score, and the confusion matrix. This preliminary evaluation was used to validate the behavior of the classifiers before running the repeated experiment required by the assignment.
+As a first step, the classifiers were created and tested on one 50/50 split of the dataset. Since the Iris dataset has 150 samples in total, this gives 75 samples for training and 75 samples for testing. The following metrics were used to evaluate performance: accuracy, precision, recall, F1-score, and the confusion matrix. This preliminary evaluation was used to validate the behavior of the classifiers before running the repeated experiment required by the assignment.
 
 \subsection{KNN Classifier}
 
@@ -61,17 +66,6 @@ Weighted average & 0.95 & 0.95 & 0.95 & 75 \\
 \includegraphics[width=0.68\textwidth]{figures/knn_confusion_matrix.png}
 \caption{KNN confusion matrix on the preliminary split.}
 \label{fig:knn-confusion}
-\end{figure}
-
-\subsection{Selection of k}
-
-To select an appropriate value for \(k\), which is the main hyperparameter of this KNN implementation, the classifier was evaluated using values from 1 to 20. For each value, accuracy, precision, recall, and F1-score were calculated on the preliminary validation split. The value \(k = 6\) was selected because it produced the best overall result in this evaluation, particularly according to the accuracy curve.
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=\textwidth]{figures/knn_k_selection.png}
-\caption{Evaluation of KNN performance for \(k\) values from 1 to 20.}
-\label{fig:knn-k-selection}
 \end{figure}
 
 \subsection{Fisher Classifier}
@@ -108,9 +102,40 @@ Weighted average & 0.89 & 0.89 & 0.89 & 75 \\
 \label{fig:fisher-confusion}
 \end{figure}
 
+\subsection{Selection of k}
+
+To select an appropriate value for \(k\), which is the main hyperparameter of this KNN implementation, the classifier was evaluated using values from 1 to 20. This selection was performed before the final model comparison using the same repeated stratified 50/50 train/test protocol as the final evaluation. Each split used 75 samples for training and 75 samples for testing in total. Because the Iris dataset has 50 samples per class, stratification kept each class evenly divided with 25 training samples and 25 testing samples. For each \(k\), accuracy, macro precision, macro recall, and macro F1-score were averaged across 20 splits. This avoids choosing \(k\) based on only one random split.
+
+Table~\ref{tab:k-selection} shows the highest-ranked values of \(k\), sorted by mean accuracy, mean F1-score, and then accuracy standard deviation. The selected value was \(k = 7\), and this value was used for the KNN classifier in the final comparison with the Fisher classifier.
+
+\begin{table}[H]
+\centering
+\caption{Top KNN hyperparameter results across 20 stratified random splits.}
+\label{tab:k-selection}
+\begin{tabular}{rrrrr}
+\toprule
+\(k\) & Accuracy Mean & Accuracy Std. & Precision Mean & F1 Mean \\
+\midrule
+7  & 0.961 & 0.015 & 0.963 & 0.961 \\
+9  & 0.960 & 0.014 & 0.962 & 0.960 \\
+5  & 0.960 & 0.018 & 0.962 & 0.960 \\
+6  & 0.958 & 0.017 & 0.960 & 0.958 \\
+11 & 0.957 & 0.020 & 0.959 & 0.957 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figures/knn_k_selection.png}
+\caption{Average KNN performance for \(k\) values from 1 to 20 across 20 stratified random splits. The shaded area indicates one standard deviation.}
+\label{fig:knn-k-selection}
+\end{figure}
+
+
 \section{Repeated Experiment Results}
 
-Both \texttt{KNNClassifier} and \texttt{FisherClassifier} were then trained and evaluated according to the assignment instructions. The data was divided using stratified random splits so that each class was divided in half: 25 samples per class for training and 25 samples per class for testing. This random selection, training, and testing procedure was repeated 20 times.
+Both \texttt{KNNClassifier} and \texttt{FisherClassifier} were then trained and evaluated according to the assignment instructions. The data was divided using repeated stratified random 50/50 splits, giving 75 total samples for training and 75 total samples for testing. Since the Iris dataset contains 50 samples per class, each split also contains 25 training samples and 25 testing samples from each class. This random selection, training, and testing procedure was repeated 20 times. The KNN classifier used the selected value \(k = 7\).
 
 Table~\ref{tab:overall-results} shows the overall classification performance across the 20 random splits. The reported values include the mean, variance, and standard deviation for accuracy, precision, recall, and F1-score.
 
@@ -123,7 +148,7 @@ Table~\ref{tab:overall-results} shows the overall classification performance acr
 \toprule
 Classifier & Acc. Mean & Acc. Var. & Acc. Std. & Prec. Mean & Prec. Var. & Prec. Std. & Rec. Mean & Rec. Var. & Rec. Std. & F1 Mean & F1 Var. & F1 Std. \\
 \midrule
-KNN    & 0.958 & 0.000 & 0.017 & 0.960 & 0.000 & 0.016 & 0.958 & 0.000 & 0.017 & 0.958 & 0.000 & 0.018 \\
+KNN    & 0.961 & 0.000 & 0.015 & 0.963 & 0.000 & 0.014 & 0.961 & 0.000 & 0.015 & 0.961 & 0.000 & 0.015 \\
 Fisher & 0.859 & 0.002 & 0.042 & 0.866 & 0.002 & 0.044 & 0.859 & 0.002 & 0.042 & 0.858 & 0.002 & 0.043 \\
 \bottomrule
 \end{tabular}
@@ -142,8 +167,8 @@ Table~\ref{tab:class-results} shows the per-class precision, recall, and F1-scor
 Classifier & Class & Prec. Mean & Prec. Var. & Prec. Std. & Rec. Mean & Rec. Var. & Rec. Std. & F1 Mean & F1 Var. & F1 Std. \\
 \midrule
 KNN    & Setosa     & 1.000 & 0.000 & 0.000 & 1.000 & 0.000 & 0.000 & 1.000 & 0.000 & 0.000 \\
-KNN    & Versicolor & 0.930 & 0.003 & 0.056 & 0.950 & 0.001 & 0.036 & 0.938 & 0.001 & 0.025 \\
-KNN    & Virginica  & 0.951 & 0.001 & 0.034 & 0.924 & 0.004 & 0.065 & 0.935 & 0.001 & 0.028 \\
+KNN    & Versicolor & 0.949 & 0.002 & 0.050 & 0.938 & 0.001 & 0.038 & 0.942 & 0.000 & 0.021 \\
+KNN    & Virginica  & 0.941 & 0.001 & 0.035 & 0.946 & 0.003 & 0.057 & 0.942 & 0.001 & 0.024 \\
 Fisher & Setosa     & 1.000 & 0.000 & 0.000 & 1.000 & 0.000 & 0.000 & 1.000 & 0.000 & 0.000 \\
 Fisher & Versicolor & 0.834 & 0.009 & 0.096 & 0.736 & 0.008 & 0.091 & 0.776 & 0.005 & 0.068 \\
 Fisher & Virginica  & 0.764 & 0.004 & 0.062 & 0.842 & 0.011 & 0.105 & 0.798 & 0.004 & 0.065 \\
@@ -154,7 +179,7 @@ Fisher & Virginica  & 0.764 & 0.004 & 0.062 & 0.842 & 0.011 & 0.105 & 0.798 & 0.
 
 \section{Discussion}
 
-After repeating the random train/test split 20 times, the k-nearest neighbor classifier achieved the highest overall performance, with an average accuracy of approximately 0.958. Its rounded accuracy variance is close to 0.000, indicating that its performance was also stable across the different random splits. The Fisher classifier obtained a lower average accuracy of approximately 0.859, with an accuracy variance of approximately 0.002.
+After selecting \(k\) using the same 20 repeated stratified train/test splits used for evaluation, the k-nearest neighbor classifier achieved the highest overall performance. The selected value was \(k = 7\). In the final model comparison, KNN obtained an average accuracy of approximately 0.961, while the Fisher classifier obtained an average accuracy of approximately 0.859. KNN also had a lower accuracy standard deviation, which indicates that its performance was more stable across the random splits.
 
 The main reason for this difference is the way each classifier separates the data. KNN is a local method: it classifies each test example by considering nearby training examples. This approach works well for the Iris dataset because samples from the same species tend to form local groups in the feature space. Fisher's linear discriminator, on the other hand, projects the data onto linear decision directions. This makes the model simpler and more constrained, so it has more difficulty when two classes overlap or are not clearly separated by a linear boundary.
 
